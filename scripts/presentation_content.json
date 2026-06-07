@@ -1,0 +1,62 @@
+{
+  "outputDir": "presentation/generated",
+  "outputFile": "答辩PPT.pptx",
+  "bulletPrefix": "•",
+  "footerPrefix": "FZU Online Note 答辩",
+  "slides": [
+    {
+      "title": "FZU Online Note",
+      "bullets": [
+        "选题方向：在线笔记",
+        "基础技术路线：HTML + CSS + JavaScript",
+        "数据持久化：localStorage",
+        "目标：完成可演示、可使用的轻量级笔记管理工具"
+      ]
+    },
+    {
+      "title": "功能概览",
+      "bullets": [
+        "新增、编辑、删除、复制笔记",
+        "置顶、搜索、筛选、排序",
+        "角色主题图库与数据概览",
+        "刷新页面后笔记仍然保留"
+      ]
+    },
+    {
+      "title": "课程要求对应",
+      "bullets": [
+        "语义化 HTML：header / main / section / form / template",
+        "CSS：Grid、Flex、响应式布局与视觉反馈",
+        "JavaScript：表单校验、动态渲染、事件处理",
+        "数据管理：完整 CRUD + localStorage"
+      ]
+    },
+    {
+      "title": "源码结构",
+      "bullets": [
+        "index.html：页面结构、表单、卡片模板",
+        "styles.css：布局、主题色、响应式与状态样式",
+        "app.js：数据模型、校验、渲染、CRUD、持久化",
+        "README 与 docs：运行说明、需求文档、项目说明"
+      ]
+    },
+    {
+      "title": "遇到的问题",
+      "bullets": [
+        "docx 需求文档样式不完整：按编号和列表整理为 Markdown",
+        "新增与编辑容易混淆：用隐藏 note-id 区分新增和更新",
+        "搜索、筛选、排序逻辑分散：集中到 getVisibleNotes 处理",
+        "角色图片外链可能不稳定：准备本地回退缓存并写入 .gitignore"
+      ]
+    },
+    {
+      "title": "总结与改进",
+      "bullets": [
+        "已完成基本要求：结构、样式、校验、动态渲染、持久化、CRUD",
+        "项目运行简单：直接打开 index.html 即可",
+        "后续可扩展 Markdown 预览、导入导出、标签管理",
+        "进阶方向：Vue 重构或加入后端登录与云端同步"
+      ]
+    }
+  ]
+}

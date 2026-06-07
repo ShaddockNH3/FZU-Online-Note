@@ -1,0 +1,11 @@
+# Local image cache used only as browser fallback during demos.
+assets/local-fallback/
+
+# Generated submission documents.
+docs/generated/
+presentation/generated/
+
+# Common editor and system files.
+.DS_Store
+Thumbs.db
+.vscode/

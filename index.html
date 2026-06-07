@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FZU Online Note</title>
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <a class="brand" href="#workspace" aria-label="FZU Online Note 首页">
+        <span class="brand-mark">FN</span>
+        <span>
+          <strong>FZU Online Note</strong>
+          <small>Sweet Study Notes</small>
+        </span>
+      </a>
+
+      <nav class="top-nav" aria-label="主导航">
+        <a href="#workspace">笔记</a>
+        <a href="#gallery">图库</a>
+        <a href="#overview">概览</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="workspace" class="workspace" aria-labelledby="workspace-title">
+        <div class="workspace-grid">
+          <section class="editor-panel" aria-labelledby="workspace-title">
+            <div class="section-heading">
+              <p class="eyebrow">Online Note</p>
+              <h1 id="workspace-title">在线笔记</h1>
+            </div>
+
+            <form id="note-form" class="note-form" novalidate>
+              <input id="note-id" type="hidden" />
+
+              <div class="field">
+                <label for="title">标题</label>
+                <input
+                  id="title"
+                  name="title"
+                  type="text"
+                  maxlength="48"
+                  autocomplete="off"
+                  placeholder="例如：Web 作业待办"
+                />
+                <p id="title-error" class="error-message" aria-live="polite"></p>
+              </div>
+
+              <div class="field">
+                <label for="content">内容</label>
+                <textarea
+                  id="content"
+                  name="content"
+                  rows="9"
+                  maxlength="2400"
+                  placeholder="写下课堂笔记、灵感、计划或复盘。"
+                ></textarea>
+                <p id="content-error" class="error-message" aria-live="polite"></p>
+              </div>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label for="tags">标签</label>
+                  <input
+                    id="tags"
+                    name="tags"
+                    type="text"
+                    maxlength="80"
+                    autocomplete="off"
+                    placeholder="课程, JavaScript"
+                  />
+                </div>
+
+                <div class="field">
+                  <label for="theme">主题</label>
+                  <select id="theme" name="theme">
+                    <option value="chieri">雪村千绘莉</option>
+                    <option value="mikuri">天宫美久栗</option>
+                    <option value="ichika">御园莓华</option>
+                    <option value="nana">舞羽娜娜</option>
+                    <option value="kaguya">百濑辉夜</option>
+                    <option value="mitsuki">百濑美月</option>
+                    <option value="kohana">小花</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="mood">状态</label>
+                  <select id="mood" name="mood">
+                    <option value="study">学习</option>
+                    <option value="idea">灵感</option>
+                    <option value="task">待办</option>
+                    <option value="review">复盘</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-strip">
+                <label class="switch">
+                  <input id="pinned" name="pinned" type="checkbox" />
+                  <span aria-hidden="true"></span>
+                  置顶
+                </label>
+
+                <figure class="theme-chip">
+                  <img id="theme-preview" src="https://moegirl.uk/images/8/89/Chara_chieri_std1-pc.png" alt="当前主题预览" />
+                  <figcaption id="theme-caption">雪村千绘莉</figcaption>
+                </figure>
+              </div>
+
+              <div class="form-actions">
+                <button class="primary-action" type="submit" id="save-button">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 4h12l2 2v14H5zM8 4v6h8V4M8 20v-6h8v6" />
+                  </svg>
+                  保存笔记
+                </button>
+                <button class="ghost-action" type="button" id="reset-button">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 4v6h6M20 20v-6h-6M6.3 17.7a8 8 0 0 0 11.4 0M17.7 6.3a8 8 0 0 0-11.4 0" />
+                  </svg>
+                  新建
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section class="library-panel" aria-labelledby="library-title">
+            <div class="library-topline">
+              <div class="section-heading compact">
+                <p class="eyebrow">Library</p>
+                <h2 id="library-title">笔记库</h2>
+              </div>
+              <div class="storage-pill" id="storage-status">localStorage</div>
+            </div>
+
+            <div class="tool-row">
+              <label class="search-field" for="search">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m21 21-4.7-4.7M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4z" />
+                </svg>
+                <input id="search" type="search" placeholder="搜索标题、内容或标签" />
+              </label>
+
+              <select id="sort" aria-label="排序方式">
+                <option value="updated">最近更新</option>
+                <option value="created">创建时间</option>
+                <option value="title">标题 A-Z</option>
+              </select>
+            </div>
+
+            <div class="segmented-control" aria-label="筛选笔记">
+              <button class="is-active" type="button" data-filter="all">全部</button>
+              <button type="button" data-filter="pinned">置顶</button>
+              <button type="button" data-filter="today">今日</button>
+            </div>
+
+            <div id="notes-list" class="notes-list" aria-live="polite"></div>
+
+            <article id="empty-state" class="empty-state" hidden>
+              <h3>还没有匹配的笔记</h3>
+              <p>换个关键词，或者新建一条。</p>
+            </article>
+          </section>
+        </div>
+      </section>
+
+      <section id="gallery" class="gallery-section" aria-labelledby="gallery-title">
+        <div class="section-heading">
+          <p class="eyebrow">Theme Gallery</p>
+          <h2 id="gallery-title">萌娘百科角色图库</h2>
+          <p class="source-note">
+            角色资料与外链图片参考
+            <a href="https://moegirl.uk/index.php?title=%E5%B7%A7%E5%85%8B%E7%94%9C%E6%81%8B&variant=zh-cn" target="_blank" rel="noreferrer">
+              萌娘百科《巧克甜恋》
+            </a>
+          </p>
+        </div>
+
+        <div id="character-gallery" class="gallery-grid"></div>
+      </section>
+
+      <section id="overview" class="overview-section" aria-labelledby="overview-title">
+        <div class="section-heading compact">
+          <p class="eyebrow">Overview</p>
+          <h2 id="overview-title">数据概览</h2>
+        </div>
+
+        <div class="stats-grid">
+          <article>
+            <span id="total-count">0</span>
+            <strong>总笔记</strong>
+          </article>
+          <article>
+            <span id="pinned-count">0</span>
+            <strong>置顶</strong>
+          </article>
+          <article>
+            <span id="tag-count">0</span>
+            <strong>标签</strong>
+          </article>
+          <article>
+            <span id="today-count">0</span>
+            <strong>今日新增</strong>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <template id="note-card-template">
+      <article class="note-card">
+        <img class="note-card-art" alt="" />
+        <div class="note-card-body">
+          <div class="note-card-head">
+            <h3></h3>
+            <button class="pin-button" type="button" aria-label="切换置顶">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v7l4 4H8l4-4V3M12 14v7" />
+              </svg>
+            </button>
+          </div>
+          <p class="note-excerpt"></p>
+          <div class="tag-list"></div>
+          <div class="note-meta"></div>
+          <div class="note-actions">
+            <button type="button" data-action="edit">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 20h4L19 9l-4-4L4 16v4zM13 7l4 4" />
+              </svg>
+              编辑
+            </button>
+            <button type="button" data-action="duplicate">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 8h10v12H8zM6 16H4V4h10v2" />
+              </svg>
+              复制
+            </button>
+            <button type="button" data-action="delete">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 7h14M9 7V5h6v2M8 10v8M12 10v8M16 10v8M7 7l1 13h8l1-13" />
+              </svg>
+              删除
+            </button>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>
