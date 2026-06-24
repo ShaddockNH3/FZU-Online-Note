@@ -16,6 +16,7 @@ PPTX_OUT = ROOT / "presentation" / "generated" / "答辩PPT.pptx"
 
 
 def find_project_doc() -> Path:
+    """在 docs 目录中查找项目说明 Markdown 文件。"""
     for path in DOCS.glob("*.md"):
         text = path.read_text(encoding="utf-8")
         if "FZU Online Note 项目说明" in text:
@@ -24,6 +25,7 @@ def find_project_doc() -> Path:
 
 
 def set_run_font(run, size=10.5, bold=False, color=None):
+    """统一设置 Word 文本片段的中文字体、字号、加粗和颜色。"""
     run.font.name = "微软雅黑"
     run._element.rPr.rFonts.set(qn("w:eastAsia"), "微软雅黑")
     run.font.size = Pt(size)
@@ -33,6 +35,7 @@ def set_run_font(run, size=10.5, bold=False, color=None):
 
 
 def set_cell_shading(cell, fill):
+    """给 Word 表格单元格设置背景色，主要用于代码块底色。"""
     tc_pr = cell._tc.get_or_add_tcPr()
     shd = OxmlElement("w:shd")
     shd.set(qn("w:fill"), fill)
@@ -40,6 +43,7 @@ def set_cell_shading(cell, fill):
 
 
 def add_code_block(doc, lines):
+    """把 Markdown 代码块转换成 Word 里的单列表格代码区域。"""
     table = doc.add_table(rows=1, cols=1)
     cell = table.cell(0, 0)
     set_cell_shading(cell, "F6F1EB")
@@ -56,6 +60,7 @@ def add_code_block(doc, lines):
 
 
 def generate_docx():
+    """读取项目说明 Markdown，并按分页标记生成排版后的 docx 文件。"""
     source = find_project_doc()
     text = source.read_text(encoding="utf-8")
     pages = [part.strip() for part in text.split("<!-- PAGE BREAK -->")]
@@ -127,10 +132,12 @@ def generate_docx():
 
 
 def xml_text(text):
+    """转义要写入 OpenXML 的文本，避免特殊字符破坏 XML 结构。"""
     return escape(text).replace("\n", "&#10;")
 
 
 def content_types():
+    """生成 pptx 包的 [Content_Types].xml，声明所有部件的类型。"""
     overrides = [
         '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>',
         '<Default Extension="xml" ContentType="application/xml"/>',
@@ -155,6 +162,7 @@ def content_types():
 
 
 def root_rels():
+    """生成压缩包根目录的关系文件，指向演示文稿和文档属性。"""
     return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>
@@ -164,6 +172,7 @@ def root_rels():
 
 
 def presentation_xml():
+    """生成 presentation.xml，登记幻灯片尺寸、母版和 6 张幻灯片。"""
     slide_ids = "".join(
         f'<p:sldId id="{255 + index}" r:id="rId{index}"/>' for index in range(1, 7)
     )
@@ -179,6 +188,7 @@ def presentation_xml():
 
 
 def presentation_rels():
+    """生成 presentation.xml.rels，连接每张幻灯片和幻灯片母版。"""
     rels = []
     for index in range(1, 7):
         rels.append(
@@ -200,6 +210,7 @@ def presentation_rels():
 
 
 def slide_rels():
+    """生成单张幻灯片的关系文件，让它引用空白版式。"""
     return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
@@ -207,6 +218,7 @@ def slide_rels():
 
 
 def shape_xml(shape_id, name, x, y, cx, cy, text, font_size, bold=False, color="1D2433"):
+    """生成一个文本框形状的 OpenXML，供标题、正文和页脚复用。"""
     paragraphs = []
     for line in text.split("\n"):
         paragraphs.append(
@@ -225,6 +237,7 @@ def shape_xml(shape_id, name, x, y, cx, cy, text, font_size, bold=False, color="
 
 
 def slide_xml(title, bullets, footer):
+    """根据标题、要点和页脚文案生成一张完整幻灯片 XML。"""
     bullet_text = "\n".join(f"• {item}" for item in bullets)
     return f"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
@@ -250,6 +263,7 @@ def slide_xml(title, bullets, footer):
 
 
 def slide_master_xml():
+    """生成最小化的幻灯片母版 XML。"""
     return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:sldMaster xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
  xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
@@ -262,6 +276,7 @@ def slide_master_xml():
 
 
 def slide_master_rels():
+    """生成幻灯片母版关系文件，连接版式和主题。"""
     return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
@@ -270,6 +285,7 @@ def slide_master_rels():
 
 
 def slide_layout_xml():
+    """生成空白幻灯片版式 XML，所有页面都基于这个版式。"""
     return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
  xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
@@ -280,6 +296,7 @@ def slide_layout_xml():
 
 
 def slide_layout_rels():
+    """生成版式关系文件，让版式回连到幻灯片母版。"""
     return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="../slideMasters/slideMaster1.xml"/>
@@ -287,6 +304,7 @@ def slide_layout_rels():
 
 
 def theme_xml():
+    """生成 PPT 主题 XML，定义颜色方案和默认字体。"""
     return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="FZU Online Note">
   <a:themeElements>
@@ -298,6 +316,7 @@ def theme_xml():
 
 
 def app_xml():
+    """生成 Office 扩展属性 XML，记录应用类型和幻灯片数量。"""
     return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"
  xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
@@ -306,6 +325,7 @@ def app_xml():
 
 
 def core_xml():
+    """生成文档核心属性 XML，例如标题、作者和最后修改者。"""
     return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
  xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -319,6 +339,7 @@ def core_xml():
 
 
 def generate_pptx():
+    """手工组装 pptx 压缩包，写入演示文稿所需的所有 XML 部件。"""
     PPTX_OUT.parent.mkdir(parents=True, exist_ok=True)
     slides = [
         (

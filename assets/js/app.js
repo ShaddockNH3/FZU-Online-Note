@@ -1,5 +1,6 @@
 const STORAGE_KEY = "fzu-online-note:v1";
 
+// 主题角色配置：每个角色提供展示文案、图片、来源链接和主题强调色。
 const themes = {
   chieri: {
     label: "雪村千绘莉",
@@ -73,6 +74,7 @@ const themes = {
   },
 };
 
+// 心情枚举的中文显示文本，用于笔记卡片的元信息。
 const moodLabels = {
   study: "学习",
   idea: "灵感",
@@ -80,6 +82,7 @@ const moodLabels = {
   review: "复盘",
 };
 
+// 缓存页面中会反复使用的表单、按钮、列表和状态节点，避免后续频繁查询 DOM。
 const form = document.querySelector("#note-form");
 const noteIdInput = document.querySelector("#note-id");
 const titleInput = document.querySelector("#title");
@@ -103,6 +106,7 @@ const characterGallery = document.querySelector("#character-gallery");
 const filterButtons = [...document.querySelectorAll("[data-filter]")];
 const storageStatus = document.querySelector("#storage-status");
 
+// 统计面板中的数字节点，渲染时会统一刷新。
 const counters = {
   total: document.querySelector("#total-count"),
   pinned: document.querySelector("#pinned-count"),
@@ -110,19 +114,23 @@ const counters = {
   today: document.querySelector("#today-count"),
 };
 
+// notes 是当前所有笔记的内存副本，activeFilter 记录当前筛选页签。
 let notes = loadNotes();
 let activeFilter = "all";
 
+// 页面首次加载时，先渲染已有数据、主题预览和角色图库。
 render();
 updateThemePreview();
 renderCharacterGallery();
 
+// 绑定页面级交互事件：提交、重置、主题预览、搜索和排序。
 form.addEventListener("submit", handleSubmit);
 resetButton.addEventListener("click", resetForm);
 themeInput.addEventListener("change", updateThemePreview);
 searchInput.addEventListener("input", renderNotes);
 sortInput.addEventListener("change", renderNotes);
 
+// 绑定筛选按钮，点击后更新当前筛选条件并刷新笔记列表。
 filterButtons.forEach((button) => {
   button.addEventListener("click", () => {
     activeFilter = button.dataset.filter;
@@ -131,6 +139,7 @@ filterButtons.forEach((button) => {
   });
 });
 
+// 处理表单提交：校验输入后，根据是否存在 note-id 决定新增或更新笔记。
 function handleSubmit(event) {
   event.preventDefault();
 
@@ -166,6 +175,7 @@ function handleSubmit(event) {
   render();
 }
 
+// 校验表单字段，并把可保存的数据整理成统一的笔记字段对象。
 function validateForm() {
   const title = titleInput.value.trim();
   const content = contentInput.value.trim();
@@ -208,17 +218,20 @@ function validateForm() {
   };
 }
 
+// 给指定输入框所在字段标记错误状态，并把错误文案显示到目标节点。
 function setFieldError(input, target, message) {
   input.closest(".field")?.classList.add("is-invalid");
   target.textContent = message;
 }
 
+// 清理表单上一次校验留下的错误样式和错误文案。
 function clearErrors() {
   document.querySelectorAll(".field.is-invalid").forEach((field) => field.classList.remove("is-invalid"));
   titleError.textContent = "";
   contentError.textContent = "";
 }
 
+// 将标签输入按中英文逗号和空白拆分，去掉空值，并限制最多 6 个标签。
 function normalizeTags(value) {
   return value
     .split(/[,，\s]+/)
@@ -227,11 +240,13 @@ function normalizeTags(value) {
     .slice(0, 6);
 }
 
+// 刷新页面主要动态内容：笔记列表和统计数据。
 function render() {
   renderNotes();
   renderStats();
 }
 
+// 根据当前搜索、筛选、排序结果重新生成笔记卡片列表。
 function renderNotes() {
   const visibleNotes = getVisibleNotes();
   notesList.textContent = "";
@@ -242,6 +257,7 @@ function renderNotes() {
   notesList.appendChild(fragment);
 }
 
+// 根据一条笔记数据克隆模板，填充标题、内容、标签、主题图和操作按钮。
 function createNoteCard(note) {
   const card = cardTemplate.content.firstElementChild.cloneNode(true);
   const theme = themes[note.theme] ?? themes.chieri;
@@ -286,6 +302,7 @@ function createNoteCard(note) {
   return card;
 }
 
+// 综合当前筛选按钮、搜索关键字和排序方式，返回应该展示的笔记数组。
 function getVisibleNotes() {
   const keyword = searchInput.value.trim().toLowerCase();
   const today = new Date().toDateString();
@@ -312,6 +329,7 @@ function getVisibleNotes() {
     .sort(sortNotes);
 }
 
+// 排序回调：置顶笔记优先，其余按标题、创建时间或更新时间排序。
 function sortNotes(a, b) {
   if (a.pinned !== b.pinned) {
     return Number(b.pinned) - Number(a.pinned);
@@ -325,6 +343,7 @@ function sortNotes(a, b) {
   return new Date(b[field]).getTime() - new Date(a[field]).getTime();
 }
 
+// 将指定笔记回填到表单中，让用户可以在原表单里编辑并保存更新。
 function editNote(id) {
   const note = notes.find((item) => item.id === id);
   if (!note) {
@@ -344,6 +363,7 @@ function editNote(id) {
   titleInput.focus();
 }
 
+// 复制一条已有笔记，生成新的 id 和时间，并默认取消置顶。
 function duplicateNote(id) {
   const note = notes.find((item) => item.id === id);
   if (!note) {
@@ -364,6 +384,7 @@ function duplicateNote(id) {
   render();
 }
 
+// 删除指定笔记；如果当前正在编辑这条笔记，同时重置表单。
 function deleteNote(id) {
   const note = notes.find((item) => item.id === id);
   if (!note || !confirm(`删除「${note.title}」？`)) {
@@ -380,6 +401,7 @@ function deleteNote(id) {
   render();
 }
 
+// 切换指定笔记的置顶状态，并更新它的修改时间。
 function togglePinned(id) {
   notes = notes.map((note) =>
     note.id === id
@@ -394,6 +416,7 @@ function togglePinned(id) {
   render();
 }
 
+// 重置表单到新建状态，并恢复按钮文案和主题预览。
 function resetForm() {
   form.reset();
   noteIdInput.value = "";
@@ -402,6 +425,7 @@ function resetForm() {
   clearErrors();
 }
 
+// 统计总笔记数、置顶数、唯一标签数和今日新增数量。
 function renderStats() {
   const today = new Date().toDateString();
   const uniqueTags = new Set(notes.flatMap((note) => note.tags));
@@ -412,6 +436,7 @@ function renderStats() {
   counters.today.textContent = notes.filter((note) => new Date(note.createdAt).toDateString() === today).length;
 }
 
+// 根据当前选中的主题刷新表单旁边的角色预览图和标题。
 function updateThemePreview() {
   const theme = themes[themeInput.value] ?? themes.chieri;
   themePreview.src = theme.image;
@@ -422,6 +447,7 @@ function updateThemePreview() {
   themeCaption.textContent = theme.label;
 }
 
+// 根据主题配置生成角色图库，并给每张外链图片设置本地备用图。
 function renderCharacterGallery() {
   const fragment = document.createDocumentFragment();
 
@@ -456,11 +482,13 @@ function renderCharacterGallery() {
   characterGallery.append(fragment);
 }
 
+// 把当前内存中的笔记写入 localStorage，并显示最近保存时间。
 function persist() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
   storageStatus.textContent = `已保存 ${new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}`;
 }
 
+// 从 localStorage 读取笔记；如果没有数据或解析失败，就回退到内置示例笔记。
 function loadNotes() {
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
@@ -470,10 +498,12 @@ function loadNotes() {
   }
 }
 
+// 生成笔记 id：优先使用浏览器随机 UUID，不支持时用时间戳加随机数兜底。
 function createId() {
   return globalThis.crypto?.randomUUID?.() ?? `note-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
+// 创建首次打开页面时展示的示例笔记，方便演示完整交互流程。
 function createSeedNotes() {
   const now = Date.now();
   return [
@@ -535,6 +565,7 @@ function createSeedNotes() {
   ];
 }
 
+// 把 ISO 时间格式化成中文环境下的月日和时分显示。
 function formatDate(value) {
   return new Intl.DateTimeFormat("zh-CN", {
     month: "2-digit",

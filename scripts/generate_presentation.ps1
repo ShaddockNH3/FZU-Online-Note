@@ -1,5 +1,6 @@
 $ErrorActionPreference = "Stop"
 
+# 计算项目根目录，读取 PPT 内容配置，并拼出最终输出路径。
 $root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $jsonPath = Join-Path $root "scripts\presentation_content.json"
 $content = Get-Content -Raw -Encoding UTF8 -LiteralPath $jsonPath | ConvertFrom-Json
@@ -7,6 +8,7 @@ $outDir = Join-Path $root $content.outputDir
 $outPath = Join-Path $outDir $content.outputFile
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
+# 如果目标文件已经存在，先删除旧文件，避免 PowerPoint 保存时被占用或弹窗确认。
 if (Test-Path -LiteralPath $outPath) {
   Remove-Item -LiteralPath $outPath -Force
 }
@@ -14,11 +16,13 @@ if (Test-Path -LiteralPath $outPath) {
 $powerPoint = $null
 $presentation = $null
 try {
+  # 启动 PowerPoint COM 对象，新建一个宽屏演示文稿。
   $powerPoint = New-Object -ComObject PowerPoint.Application
   $powerPoint.Visible = -1
   $presentation = $powerPoint.Presentations.Add()
   $presentation.PageSetup.SlideSize = 13
 
+  # 遍历 JSON 中的每一页内容，逐页添加背景、顶部色条、标题、正文和页脚。
   foreach ($slideData in $content.slides) {
     $slide = $presentation.Slides.Add($presentation.Slides.Count + 1, 12)
     $background = $slide.Background.Fill
@@ -58,9 +62,11 @@ try {
     $footer.Line.Visible = 0
   }
 
+  # 以 pptx 格式保存生成结果。
   $presentation.SaveAs($outPath, 24)
   Write-Output "generated: $outPath"
 } finally {
+  # 无论生成成功还是报错，都关闭演示文稿并退出 PowerPoint，避免残留后台进程。
   if ($presentation) {
     $presentation.Close()
   }

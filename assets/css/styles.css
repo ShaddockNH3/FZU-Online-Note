@@ -1,3 +1,4 @@
+/* 全局主题变量：统一管理颜色、阴影和圆角，方便后续调整整体视觉风格。 */
 :root {
   --ink: #1d2433;
   --muted: #667085;
@@ -13,6 +14,7 @@
   --radius: 8px;
 }
 
+/* 基础重置：让盒模型、表单字体、图片和链接在不同浏览器下表现更一致。 */
 * {
   box-sizing: border-box;
 }
@@ -21,6 +23,7 @@ html {
   scroll-behavior: smooth;
 }
 
+/* 页面主体背景和默认字体设置，负责整体的柔和渐变氛围。 */
 body {
   min-width: 320px;
   margin: 0;
@@ -56,6 +59,7 @@ a {
   text-decoration: none;
 }
 
+/* 顶部导航栏：固定在页面顶部，包含品牌标识和页面锚点导航。 */
 .app-header {
   position: sticky;
   top: 0;
@@ -71,6 +75,7 @@ a {
   backdrop-filter: blur(18px);
 }
 
+/* 品牌区域：控制 FN 标识、主标题和副标题的横向排列。 */
 .brand {
   display: inline-flex;
   align-items: center;
@@ -108,6 +113,7 @@ a {
   font-size: 0.78rem;
 }
 
+/* 右侧导航链接：用于跳转到笔记区、图库和数据概览。 */
 .top-nav {
   display: flex;
   align-items: center;
@@ -127,12 +133,14 @@ a {
   background: rgba(233, 111, 140, 0.13);
 }
 
+/* 主工作区外层：提供页面边距和溢出控制。 */
 .workspace {
   position: relative;
   overflow: hidden;
   padding: clamp(22px, 4vw, 48px) clamp(16px, 4vw, 56px) clamp(34px, 6vw, 72px);
 }
 
+/* 工作区两栏布局：左侧编辑表单，右侧笔记库。 */
 .workspace-grid {
   display: grid;
   grid-template-columns: minmax(320px, 430px) minmax(0, 1fr);
@@ -142,6 +150,7 @@ a {
   align-items: start;
 }
 
+/* 编辑面板和笔记库面板的共同卡片样式。 */
 .editor-panel,
 .library-panel {
   border: 1px solid rgba(90, 61, 51, 0.14);
@@ -159,6 +168,7 @@ a {
   padding: clamp(16px, 3vw, 24px);
 }
 
+/* 区块标题和资料来源文字的基础样式。 */
 .section-heading {
   margin-bottom: 18px;
 }
@@ -190,6 +200,7 @@ a {
   text-transform: uppercase;
 }
 
+/* 标题文本的换行和字号设置，避免长内容撑破布局。 */
 h1,
 h2,
 h3,
@@ -212,11 +223,13 @@ h2 {
   font-size: 1.42rem;
 }
 
+/* 笔记表单：使用网格间距组织输入项。 */
 .note-form {
   display: grid;
   gap: 16px;
 }
 
+/* 表单字段：控制 label、输入框、文本域和校验错误状态。 */
 .field {
   display: grid;
   gap: 7px;
@@ -273,6 +286,7 @@ textarea:focus {
   font-size: 0.8rem;
 }
 
+/* 表单中的双列区域，用来摆放标签、主题和状态选择。 */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -283,6 +297,7 @@ textarea:focus {
   grid-column: 1 / -1;
 }
 
+/* 置顶开关和主题预览所在的横条区域。 */
 .form-strip {
   display: flex;
   align-items: center;
@@ -294,6 +309,7 @@ textarea:focus {
   background: linear-gradient(135deg, rgba(130, 168, 220, 0.14), rgba(123, 203, 183, 0.12));
 }
 
+/* 自定义开关样式：隐藏原 checkbox，用滑块展示开关状态。 */
 .switch {
   display: inline-flex;
   align-items: center;
@@ -337,6 +353,7 @@ textarea:focus {
   transform: translateX(20px);
 }
 
+/* 当前主题预览：显示所选角色缩略图和角色名称。 */
 .theme-chip {
   display: inline-flex;
   align-items: center;
@@ -356,6 +373,7 @@ textarea:focus {
   background: #fff;
 }
 
+/* 表单、卡片和工具栏按钮的基础排列。 */
 .form-actions,
 .note-actions,
 .tool-row {
@@ -368,6 +386,7 @@ textarea:focus {
   flex-wrap: wrap;
 }
 
+/* 主要按钮、次要按钮、笔记操作按钮和筛选按钮的统一交互样式。 */
 .primary-action,
 .ghost-action,
 .note-actions button,
@@ -421,6 +440,7 @@ textarea:focus {
   transform: translateY(-1px);
 }
 
+/* 笔记库顶部：标题和本地存储状态提示。 */
 .library-topline {
   display: flex;
   align-items: flex-start;
@@ -438,6 +458,7 @@ textarea:focus {
   background: rgba(123, 203, 183, 0.22);
 }
 
+/* 搜索与排序工具栏：左侧搜索框，右侧排序下拉框。 */
 .tool-row {
   align-items: stretch;
   margin-bottom: 12px;
@@ -471,6 +492,7 @@ textarea:focus {
   flex: 0 0 138px;
 }
 
+/* 分段筛选按钮：在全部、置顶和今日新增之间切换。 */
 .segmented-control {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -493,11 +515,13 @@ textarea:focus {
   box-shadow: 0 8px 20px rgba(60, 45, 38, 0.1);
 }
 
+/* 笔记列表容器：按间距纵向排列每张笔记卡片。 */
 .notes-list {
   display: grid;
   gap: 14px;
 }
 
+/* 单张笔记卡片：左侧角色图，右侧标题、内容、标签和操作按钮。 */
 .note-card {
   display: grid;
   grid-template-columns: 116px minmax(0, 1fr);
@@ -523,6 +547,7 @@ textarea:focus {
     #fbf0ed;
 }
 
+/* 笔记内容区：控制卡片内部文本、置顶按钮、标签和元信息。 */
 .note-card-body {
   display: grid;
   gap: 10px;
@@ -605,6 +630,7 @@ textarea:focus {
   background: #fff0f1;
 }
 
+/* 空状态：没有匹配笔记时显示提示。 */
 .empty-state {
   display: grid;
   place-items: center;
@@ -625,6 +651,7 @@ textarea:focus {
   color: var(--muted);
 }
 
+/* 图库区和概览区：控制底部两个展示模块的整体留白。 */
 .gallery-section,
 .overview-section {
   padding: clamp(34px, 6vw, 72px) clamp(16px, 4vw, 56px);
@@ -643,6 +670,7 @@ textarea:focus {
   margin-left: auto;
 }
 
+/* 角色图库：按网格展示所有主题角色。 */
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -683,12 +711,14 @@ textarea:focus {
   font-size: 0.82rem;
 }
 
+/* 数据概览区：展示总数、置顶、标签和今日新增统计。 */
 .overview-section {
   background:
     linear-gradient(90deg, rgba(130, 168, 220, 0.18), rgba(240, 189, 89, 0.18)),
     #fffdf9;
 }
 
+/* 统计卡片网格：四个指标在桌面端横向排列。 */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -716,6 +746,7 @@ textarea:focus {
   color: var(--muted);
 }
 
+/* 平板布局：工作区改为单列，图库和统计改为两列。 */
 @media (max-width: 980px) {
   .workspace-grid {
     grid-template-columns: 1fr;
@@ -734,6 +765,7 @@ textarea:focus {
   }
 }
 
+/* 手机布局：顶部导航纵向排列，表单、工具栏、卡片和统计全部改为单列。 */
 @media (max-width: 680px) {
   .app-header {
     align-items: flex-start;
