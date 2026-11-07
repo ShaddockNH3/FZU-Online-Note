@@ -631,6 +631,11 @@ textarea:focus {
 }
 
 /* 空状态：没有匹配笔记时显示提示。 */
+/* display:grid 会盖掉浏览器对 [hidden] 的默认 display:none，这里显式补回来 */
+.empty-state[hidden] {
+  display: none;
+}
+
 .empty-state {
   display: grid;
   place-items: center;
@@ -805,4 +810,9 @@ textarea:focus {
   .stats-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* 外链和本地兜底都加载失败时，把图藏掉而不是留一个破图标 */
+img.is-missing {
+  visibility: hidden;
 }
