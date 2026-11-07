@@ -1,3 +1,5 @@
+> 闲时重构，见重构分支。
+
 # FZU Online Note
 
 一个轻量级在线笔记 Web 应用，选题方向为“在线笔记”。项目使用原生 HTML、CSS 和 JavaScript 实现，不依赖后端服务，数据通过浏览器 `localStorage` 持久化保存。
